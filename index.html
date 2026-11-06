@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>데이트 신청서</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jua&family=Gowun+Dodum&display=swap">
+<style>
+/* Layout: 휴대폰 한 화면 카드. 위에 고양이, 가운데 질문, 아래 버튼 놀이터(고양이 발이 아니요를 치움) */
+:root {
+  color-scheme: light;
+  --bg: #fff3ea;          /* 살구빛 바탕 */
+  --card: #ffffff;
+  --ink: #4a3428;         /* 글자 */
+  --soft: #9c8273;        /* 보조 글자 */
+  --pink: #ff6f91;        /* 예 버튼 */
+  --pink-deep: #e5517a;
+  --cat: #ffb562;         /* 고양이 털 */
+  --cat-deep: #e8924a;
+  --cream: #fff8e7;
+  --line: #f4dccb;
+  --display: "Jua", "Gowun Dodum", system-ui, sans-serif;
+  --body: "Gowun Dodum", system-ui, sans-serif;
+}
+[hidden] { display: none !important; }
+html, body { height: 100%; }
+body {
+  background: var(--bg);
+  background-image: radial-gradient(circle at 18% 12%, #ffe6d3 0 14%, transparent 15%), radial-gradient(circle at 86% 82%, #ffe3ea 0 12%, transparent 13%);
+  color: var(--ink); font-family: var(--body);
+  margin: 0; display: flex;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 16px; box-sizing: border-box; overflow-x: hidden; overflow-y: auto;
+  -webkit-tap-highlight-color: transparent;
+}
+.card {
+  position: relative; width: 100%; max-width: 380px; margin: auto;
+  background: var(--card); border-radius: 28px;
+  box-shadow: 0 2px 0 var(--line), 0 18px 40px rgba(232, 146, 74, 0.16);
+  padding: 26px 22px 24px; box-sizing: border-box; text-align: center;
+  display: flex; flex-direction: column; align-items: center; gap: 12px;
+}
+.catwrap { position: relative; }
+.cat { width: 150px; height: 150px; display: block; animation: bob 2.6s ease-in-out infinite; }
+@keyframes bob { 50% { transform: translateY(-5px); } }
+.bubble {
+  position: absolute; left: 62%; top: 4px; white-space: nowrap;
+  background: var(--ink); color: #fff; font-family: var(--display); font-size: 15px;
+  padding: 6px 12px; border-radius: 14px 14px 14px 4px;
+  animation: pop .25s cubic-bezier(.3,1.6,.5,1);
+}
+@keyframes pop { from { transform: scale(.5); opacity: 0; } }
+h1 { font-family: var(--display); font-weight: 400; font-size: 27px; line-height: 1.35; margin: 0; text-wrap: balance; }
+p.sub { margin: 0; color: var(--soft); font-size: 15px; }
+
+/* 버튼 놀이터 */
+.play { position: relative; width: 100%; height: 210px; overflow: hidden; touch-action: manipulation; }
+button { font-family: var(--display); border: 0; cursor: pointer; touch-action: manipulation; }
+button:focus-visible { outline: 3px solid var(--cat-deep); outline-offset: 3px; }
+.yes {
+  background: var(--pink); color: #fff; border-radius: 999px;
+  font-size: 22px; padding: 12px 30px; box-shadow: 0 4px 0 var(--pink-deep);
+  transition: transform .3s cubic-bezier(.3,1.6,.5,1);
+}
+.yes:active { box-shadow: 0 1px 0 var(--pink-deep); }
+.play .yes, .play .no { position: absolute; }
+.no {
+  background: #f3eeea; color: var(--soft); border-radius: 999px;
+  font-size: 18px; padding: 11px 22px; box-shadow: 0 3px 0 #ddd2ca;
+  transition: left .38s cubic-bezier(.2,1.3,.4,1), top .38s cubic-bezier(.2,1.3,.4,1), transform .2s;
+  z-index: 2;
+}
+.no.hit { transform: rotate(-12deg) scale(.94); }
+.paw { position: absolute; left: 0; top: 0; width: 150px; height: 56px; pointer-events: none; z-index: 3; transform: translate(-200px, 0); }
+
+/* 예 이후 */
+.q { font-family: var(--display); font-size: 18px; margin: 6px 0 -2px; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+.chip { background: var(--cream); color: var(--ink); border: 2px solid transparent; border-radius: 999px; padding: 10px 16px; font-size: 17px; }
+.chip[aria-pressed="true"] { background: #ffe0e8; border-color: var(--pink); color: var(--pink-deep); }
+.yes:disabled { opacity: .45; cursor: default; }
+.ticket { width: 100%; background: var(--cream); border-radius: 18px; padding: 16px; box-sizing: border-box; border: 2px dashed #f5c3a4; text-align: left; display: grid; grid-template-columns: auto 1fr; gap: 8px 14px; font-size: 17px; margin: 0; }
+.ticket dt { color: var(--soft); }
+.ticket dd { margin: 0; font-family: var(--display); }
+.stamp { font-family: var(--display); color: var(--pink-deep); border: 3px solid var(--pink-deep); border-radius: 10px; padding: 2px 10px; transform: rotate(-8deg); display: inline-block; font-size: 18px; }
+.small { background: var(--cream); color: var(--ink); border-radius: 999px; padding: 8px 16px; font-size: 15px; }
+.heart { position: fixed; bottom: -40px; pointer-events: none; z-index: 30; animation: rise linear forwards; }
+@keyframes rise { to { transform: translateY(-115vh) rotate(var(--r)); opacity: .2; } }
+@media (prefers-reduced-motion: reduce) { .cat, .heart { animation: none; } .heart { display: none; } }
+</style>
+</head>
+<body>
+
+<main class="card" id="card" aria-live="polite"></main>
+
+<script>
+(() => {
+  // ---------- 귀여운 고양이 (직접 그린 SVG) ----------
+  function cat(mood) {
+    const eyes = {
+      ask: `<circle cx="80" cy="96" r="7" fill="#4a3428"/><circle cx="120" cy="96" r="7" fill="#4a3428"/><circle cx="82.5" cy="93.5" r="2.4" fill="#fff"/><circle cx="122.5" cy="93.5" r="2.4" fill="#fff"/>`,
+      smug: `<path d="M71 95 q9 -7 18 0" stroke="#4a3428" stroke-width="4.5" fill="none" stroke-linecap="round"/><path d="M114 89 l12 6 l-12 6" stroke="#4a3428" stroke-width="4.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`,
+      happy: `<path d="M71 99 q9 -11 18 0" stroke="#4a3428" stroke-width="4.5" fill="none" stroke-linecap="round"/><path d="M111 99 q9 -11 18 0" stroke="#4a3428" stroke-width="4.5" fill="none" stroke-linecap="round"/>`,
+    }[mood];
+    const extra = mood === "happy"
+      ? `<path d="M164 44 c-6 -10 -20 -4 -14 8 l14 12 l14 -12 c6 -12 -8 -18 -14 -8z" fill="#ff6f91"/><path d="M30 62 c-4 -7 -14 -3 -10 5 l10 8 l10 -8 c4 -8 -6 -12 -10 -5z" fill="#ffa3b8"/>`
+      : mood === "ask" ? `<text x="160" y="58" font-family="Jua, sans-serif" font-size="34" fill="#ff6f91">?</text>` : "";
+    return `<svg class="cat" viewBox="0 0 200 200" aria-hidden="true">
+      <ellipse cx="100" cy="182" rx="56" ry="8" fill="#f5dfcf"/>
+      <path d="M138 168 q38 -4 34 -40 q-2 -14 -12 -12" stroke="#ffb562" stroke-width="13" fill="none" stroke-linecap="round"/>
+      <path d="M160 116 q10 -2 12 10" stroke="#e8924a" stroke-width="5" fill="none" stroke-linecap="round"/>
+      <ellipse cx="100" cy="150" rx="44" ry="33" fill="#ffb562"/>
+      <ellipse cx="100" cy="158" rx="24" ry="22" fill="#fff7ee"/>
+      <path d="M50 76 L58 26 L92 56 Z" fill="#ffb562" stroke="#ffb562" stroke-width="6" stroke-linejoin="round"/>
+      <path d="M150 76 L142 26 L108 56 Z" fill="#ffb562" stroke="#ffb562" stroke-width="6" stroke-linejoin="round"/>
+      <path d="M60 64 L63 40 L80 56 Z" fill="#ffc7d2"/><path d="M140 64 L137 40 L120 56 Z" fill="#ffc7d2"/>
+      <ellipse cx="100" cy="98" rx="58" ry="46" fill="#ffb562"/>
+      <path d="M100 54 v14 M86 57 q2 7 4 11 M114 57 q-2 7 -4 11" stroke="#e8924a" stroke-width="5" stroke-linecap="round" fill="none"/>
+      <ellipse cx="91" cy="116" rx="13" ry="10" fill="#fff7ee"/><ellipse cx="109" cy="116" rx="13" ry="10" fill="#fff7ee"/>
+      <ellipse cx="66" cy="112" rx="9" ry="5.5" fill="#ffc7d2"/><ellipse cx="134" cy="112" rx="9" ry="5.5" fill="#ffc7d2"/>
+      ${eyes}
+      <path d="M95 106 h10 l-5 6 z" fill="#ff8fa6" stroke="#ff8fa6" stroke-width="2" stroke-linejoin="round"/>
+      <path d="M92 116 q4 6 8 0 q4 6 8 0" stroke="#4a3428" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <path d="M60 108 h-22 M60 115 l-20 5 M140 108 h22 M140 115 l20 5" stroke="#c9a088" stroke-width="2.2" stroke-linecap="round"/>
+      <ellipse cx="80" cy="178" rx="13" ry="8" fill="#fff7ee"/><ellipse cx="120" cy="178" rx="13" ry="8" fill="#fff7ee"/>
+      ${extra}
+    </svg>`;
+  }
+  // 고양이 앞발 (오른쪽을 향함)
+  const PAW = `<svg viewBox="0 0 150 56" width="150" height="56" aria-hidden="true">
+    <rect x="-20" y="12" width="132" height="32" rx="16" fill="#ffb562"/>
+    <path d="M30 18 v20 M52 18 v20" stroke="#e8924a" stroke-width="5" stroke-linecap="round"/>
+    <circle cx="118" cy="28" r="26" fill="#fff7ee"/>
+    <ellipse cx="114" cy="34" rx="10" ry="8" fill="#ffaabd"/>
+    <circle cx="130" cy="20" r="5" fill="#ffaabd"/><circle cx="133" cy="33" r="5" fill="#ffaabd"/>
+    <circle cx="124" cy="9" r="4.5" fill="#ffaabd"/><circle cx="126" cy="46" r="4.5" fill="#ffaabd"/>
+  </svg>`;
+
+  const card = document.getElementById("card");
+  const LINES = ["냥! 그건 안 돼", "아니요는 치워버렸다냥", "다시 골라봐냥", "예가 더 예쁘다냥", "어림없다냥", "냥냥펀치!"];
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let swats = 0;
+
+  // ---------- 1단계: 질문 ----------
+  function ask() {
+    swats = 0;
+    card.innerHTML = `
+      <div class="catwrap" id="catwrap">${cat("ask")}</div>
+      <h1>이번 주에<br>나랑 데이트 할래?</h1>
+      <p class="sub">신중하게 골라줘</p>
+      <div class="play" id="play">
+        <button class="yes" id="yes" type="button">예</button>
+        <button class="no" id="no" type="button">아니요</button>
+        <div class="paw" id="paw">${PAW}</div>
+      </div>`;
+    const play = document.getElementById("play"), yes = document.getElementById("yes");
+    const no = document.getElementById("no"), paw = document.getElementById("paw"), catwrap = document.getElementById("catwrap");
+    yes.addEventListener("click", yesFlow);
+
+    // 처음 위치: 예는 왼쪽, 아니요는 오른쪽
+    const place = () => {
+      const W = play.clientWidth, H = play.clientHeight;
+      yes.style.left = (W * 0.3 - yes.offsetWidth / 2) + "px";
+      yes.style.top = (H / 2 - yes.offsetHeight / 2) + "px";
+      no.style.left = (W * 0.72 - no.offsetWidth / 2) + "px";
+      no.style.top = (H / 2 - no.offsetHeight / 2) + "px";
+    };
+    place();
+    document.fonts && document.fonts.ready.then(place);
+
+    let busy = false, bubbleTimer;
+    function say(text) {
+      const old = catwrap.querySelector(".bubble"); if (old) old.remove();
+      const b = document.createElement("div"); b.className = "bubble"; b.textContent = text;
+      catwrap.appendChild(b);
+      clearTimeout(bubbleTimer); bubbleTimer = setTimeout(() => b.remove(), 1600);
+    }
+    function overlapsYes(x, y, w, h) {
+      const pr = play.getBoundingClientRect(), yr = yes.getBoundingClientRect(), pad = 10;
+      const yx = yr.left - pr.left - pad, yy = yr.top - pr.top - pad;
+      return x < yx + yr.width + pad * 2 && x + w > yx && y < yy + yr.height + pad * 2 && y + h > yy;
+    }
+    async function swat(e) {
+      if (e) e.preventDefault();
+      if (busy) return;
+      busy = true; swats++;
+      const W = play.clientWidth, H = play.clientHeight, bw = no.offsetWidth, bh = no.offsetHeight;
+      const cx = no.offsetLeft, cy = no.offsetTop;
+      // 새 자리 고르기 (예 버튼과 안 겹치게, 지금 자리와 멀리)
+      let nx = cx, ny = cy, best = -1;
+      for (let i = 0; i < 80; i++) {
+        const x = 4 + Math.random() * (W - bw - 8), y = 4 + Math.random() * (H - bh - 8);
+        if (overlapsYes(x, y, bw, bh)) continue;
+        const d = Math.hypot(x - cx, y - cy);
+        if (d > W * 0.3) { nx = x; ny = y; break; }
+        if (d > best) { best = d; nx = x; ny = y; }
+      }
+      const fromLeft = nx > cx;               // 오른쪽으로 밀 땐 왼쪽에서 발이 나옴
+      const pawY = cy + bh / 2 - 28;
+      const start = fromLeft ? -160 : W + 10;
+      const hit = fromLeft ? cx - 150 + 16 : cx + bw - 16;
+      const flip = fromLeft ? "" : " scaleX(-1)";
+      catwrap.innerHTML = cat("smug");
+      say(LINES[(swats - 1) % LINES.length]);
+      if (!reduce) {
+        await paw.animate([
+          { transform: `translate(${start}px, ${pawY}px)${flip}` },
+          { transform: `translate(${hit}px, ${pawY}px)${flip}` },
+        ], { duration: 170, easing: "cubic-bezier(.3,.9,.5,1)", fill: "forwards" }).finished;
+      }
+      no.classList.add("hit");
+      no.style.left = nx + "px"; no.style.top = ny + "px";
+      if (navigator.vibrate) try { navigator.vibrate(30); } catch (err) {}
+      yes.style.transform = `scale(${1 + Math.min(swats, 6) * 0.07})`;
+      if (!reduce) {
+        await paw.animate([
+          { transform: `translate(${hit + (fromLeft ? 40 : -40)}px, ${pawY}px)${flip}` },
+          { transform: `translate(${start}px, ${pawY}px)${flip}` },
+        ], { duration: 260, delay: 60, easing: "ease-in", fill: "forwards" }).finished;
+      }
+      no.classList.remove("hit");
+      setTimeout(() => { if (catwrap.isConnected) { const b = catwrap.querySelector(".bubble"); catwrap.innerHTML = cat("ask"); if (b) catwrap.appendChild(b); } }, 700);
+      busy = false;
+    }
+    no.addEventListener("pointerdown", swat);
+    no.addEventListener("pointerenter", e => { if (e.pointerType === "mouse") swat(e); });
+    no.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") swat(e); });
+    no.addEventListener("click", e => e.preventDefault());
+  }
+
+  // ---------- 2단계: 예! ----------
+  const pick = { when: "", what: "" };
+  function hearts(n = 26) {
+    if (reduce) return;
+    const colors = ["#ff6f91", "#ffa3b8", "#ffc4d3", "#e5517a", "#ffcf3f"];
+    for (let i = 0; i < n; i++) {
+      const h = document.createElement("div"); h.className = "heart";
+      const size = 14 + Math.random() * 22;
+      h.innerHTML = `<svg width="${size}" height="${size}" viewBox="0 0 24 24"><path d="M12 21s-8-5.2-8-11a4.5 4.5 0 0 1 8-2.8A4.5 4.5 0 0 1 20 10c0 5.8-8 11-8 11z" fill="${colors[i % colors.length]}"/></svg>`;
+      h.style.left = Math.random() * 100 + "vw";
+      h.style.setProperty("--r", (Math.random() * 120 - 60) + "deg");
+      h.style.animationDuration = 2.4 + Math.random() * 2 + "s";
+      h.style.animationDelay = Math.random() * 0.8 + "s";
+      document.body.appendChild(h);
+      setTimeout(() => h.remove(), 5500);
+    }
+  }
+  function chips(name, list) {
+    return `<div class="chips" data-name="${name}">${list.map(v => `<button class="chip" type="button" aria-pressed="false">${v}</button>`).join("")}</div>`;
+  }
+  function yesFlow() {
+    hearts();
+    pick.when = pick.what = "";
+    card.innerHTML = `
+      <div class="catwrap">${cat("happy")}</div>
+      <h1>야호! 데이트 확정</h1>
+      <p class="sub">${swats ? `아니요 버튼은 고양이가 ${swats}번 치워뒀어` : "바로 예를 누를 줄 알았다냥"}</p>
+      <div class="q">언제 만날까?</div>
+      ${chips("when", ["오늘 밤", "내일", "내일모레"])}
+      <div class="q">어떤 데이트?</div>
+      ${chips("what", ["식사 데이트", "카페 데이트", "분수쇼"])}
+      <button class="yes" id="done" type="button" style="margin-top:8px" disabled>데이트 티켓 받기</button>`;
+    const done = document.getElementById("done");
+    card.querySelectorAll(".chips").forEach(group => group.addEventListener("click", e => {
+      const b = e.target.closest(".chip"); if (!b) return;
+      pick[group.dataset.name] = b.textContent;
+      group.querySelectorAll(".chip").forEach(c => c.setAttribute("aria-pressed", c === b ? "true" : "false"));
+      done.disabled = !(pick.when && pick.what);
+    }));
+    done.addEventListener("click", ticket);
+  }
+
+  // ---------- 3단계: 티켓 ----------
+  function ticket() {
+    hearts(14);
+    card.innerHTML = `
+      <div class="catwrap">${cat("happy")}</div>
+      <h1>데이트 티켓</h1>
+      <dl class="ticket">
+        <dt>언제</dt><dd>${pick.when}</dd>
+        <dt>데이트</dt><dd>${pick.what}</dd>
+        <dt>상태</dt><dd><span class="stamp">예약 완료</span></dd>
+      </dl>
+      <p class="sub">이 화면을 캡처해서 보내줘!</p>
+      <button class="small" type="button" id="back">처음으로</button>`;
+    document.getElementById("back").addEventListener("click", ask);
+  }
+
+  ask();
+})();
+</script>
+</body>
+</html>
